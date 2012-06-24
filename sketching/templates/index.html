@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Sketching with Hardware Conference{% endblock %}
+{% block extra_js %}
+    {% load socketio_tags %}
+    {% socketio %}
+
+
+    <script type="text/javascript">
+        var room = "{{room}}";
+        
+        var red = 200, green = 100, blue = 50;
+
+	    $(function() {
+	        socket = new io.Socket();
+	        socket.connect();
+	        socket.on('connect', function() {
+		        socket.subscribe(room);
+		        
+		        //socket.send({room: room, action:'join', data:'Hello world'});
+	        });
+
+            socket.on('message', function(data) {
+                //console.log(data);
+                switch (data.a) {
+                    case "ack":
+                        console.log("Ack");
+                        break;
+                }
+            });
+	        
+/**	        socket.on('message', function(data) {
+	            console.log(data.a);
+	            switch (data.a) {
+	                case "joined":
+	                    if (data.username == username) {
+	                        $("#signin").hide();
+	                        $("#phonedata").show();
+	                        $("#pname").html(data.username);
+	                        $("#pid").html(data.id);
+	                        pid = data.id; // store this for later.
+                            window.addEventListener("devicemotion", update_accel, false);
+                        }
+	                    break;
+                    case "join_failed":
+                        alert("joined failed " + data.message);
+                        break;
+	            }
+	        });**/
+	        
+	        // set up the sliders
+	        var change_callback = (function(event, ui) {
+	            red = $( "#redslider" ).slider("value");
+	            green = $( "#greenslider" ).slider("value");
+	            blue = $( "#blueslider" ).slider("value");
+	            //console.log(r, g, b);
+	            var rgb = "rgb(" + red + ", " + green + ", " + blue + ")";
+	            //console.log(rgb);
+	            // write out the vals to the screen.
+	            $("#rval").text(red);
+	            $("#gval").text(green);
+	            $("#bval").text(blue);	            
+	            $("#swatch").css("background-color", rgb);
+	        });
+	        
+	        var slider_opts = {range: "min", min: 0, max:255, value: 0, change: change_callback};
+	        $( "#redslider" ).slider(slider_opts);
+	        $( "#greenslider" ).slider(slider_opts);
+	        $( "#blueslider" ).slider(slider_opts);
+            // set the sliders
+	        $( "#redslider" ).slider("value", red);
+	        $( "#greenslider" ).slider("value", green);
+	        $( "#blueslider" ).slider("value", blue);
+	            
+	        
+	        // set up the ping handlers.
+	        $(".ping").click(function(evt) {
+	            msg = {a:"clr", r: red, b: blue, g: green, p: $(this).data("pos") }
+	            socket.send(msg);
+	        });
+        });
+
+    </script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .ping {width: 100px; height: 100px; border: 1px solid black; float: left; margin-left: 20px;}
+</style>
+
+{% endblock %}
+
+{% block main %}
+    <div><h1>Sketching test</h1></div>
+    <div id="slidercontainer">
+        <div id="redslider"></div>
+        <p>Red: <span id="rval"></span></p>
+        <div id="greenslider"></div>
+        <p>Green: <span id="gval"></span></p>
+        <div id="blueslider"></div>
+        <p>Blue: <span id="bval"></span></p>
+    </div>
+    <div id="swatch"></div>
+    <div class="clearfix"></div>
+    <div id="pings">
+        <div id="ping1" class="ping" data-pos="0">0</div>
+        <div id="ping2" class="ping" data-pos="1">1</div>
+        <div id="ping3" class="ping" data-pos="2">2</div>
+    </div>
+{% endblock %}
+
+

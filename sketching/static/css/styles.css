@@ -1,0 +1,11 @@
+#slidercontainer, #valuecontainer { width: 300px; float: left; clear: left; }
+#redslider, #greenslider, #blueslider { width: 300px;}
+
+#redslider .ui-slider-range { background: #ef2929; }
+#greenslider .ui-slider-range { background: #8ae234; }
+#blueslider .ui-slider-range { background: #729fcf; }
+
+#swatch {width: 200px; height: 200px; border: 1px solid black; float: left; margin-left: 100px; }
+
+.clearfix {clear: both;}
+

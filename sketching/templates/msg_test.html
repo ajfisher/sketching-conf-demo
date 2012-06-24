@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Test file to ensure Messages working{% endblock %}
+{% block extra_js %}
+    {% load socketio_tags %}
+    {% socketio %}
+
+
+    <script type="text/javascript">
+        var room = "{{ room }}";
+        
+        var red = null, green = null, blue = null;
+
+	    $(function() {
+	        socket = new io.Socket();
+	        socket.connect();
+	        socket.on('connect', function() {
+		        socket.subscribe(room);
+	        });
+
+            socket.on('message', function(data) {
+                //console.log(data);
+                switch (data.a) {
+                    case "clr":
+                        console.log("Colour set: RGB(" + data.r + "," + data.g + "," + data.b + ") P: " + data.pos);
+                        
+                        $("#rval").text(data.r);
+                        $("#gval").text(data.g);
+                        $("#bval").text(data.b);
+                        $("#posval").text(data.pos);
+                        
+                        var rgb = "rgb(" + data.r + ", " + data.g + ", " + data.b + ")";
+        	            $("#swatch").css("background-color", rgb);
+                        break;
+                
+                }
+            });
+        });
+
+    </script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+
+</style>
+
+{% endblock %}
+
+{% block main %}
+    <div><h1>Test Values</h1></div>
+    <div id="valuecontainer">
+        <p>Red: <span id="rval"></span></p>
+        <p>Green: <span id="gval"></span></p>
+        <p>Blue: <span id="bval"></span></p>
+        <p>Item touched: <span id="posval"></span></p>
+    </div>
+    <div id="swatch"></div>
+    <div class="clearfix"></div>
+{% endblock %}
+
+
