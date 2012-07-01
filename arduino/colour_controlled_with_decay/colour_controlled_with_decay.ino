@@ -12,7 +12,7 @@ char path[] = "/socket.io/websocket/";
 int port = 8000;
 WebSocketClient client;
 
-#define BUFLENGTH 64
+#define BUFLENGTH 32
 char buf[BUFLENGTH]; // character buffer for json processing
 
 #define STATE_NONE 0
@@ -25,7 +25,6 @@ int SDI = 3;
 int colour_id = 0;
 
 #define STRIP_LENGTH 3 // Number of RGBLED modules connected
-long strip_colors[STRIP_LENGTH];
 
 long ind_colours[STRIP_LENGTH]; // actual individual modules.
 
@@ -33,12 +32,15 @@ struct colour_module {
   int r;
   int b;
   int g;
+  long rgb;
 };
 
-int pos = -1;
-int red = 0;
-int blue = 0;
-int green = 0;
+struct colour_module modules[STRIP_LENGTH];
+
+//int pos = -1;
+//int red = 0;
+//int blue = 0;
+//int green = 0;
 
 #define DEBUG
 
@@ -51,6 +53,19 @@ void setup() {
   #ifdef DEBUG
     Serial.println("Starting Up");
     freeMem("At Start: ");
+    Serial.println("initialise modules");
+  #endif
+
+  for (int i=0; i<STRIP_LENGTH; i++) {
+    modules[i].r = 0;
+    modules[i].g = 0;
+    modules[i].b = 0;
+    modules[i].rgb = 0;
+  }
+  
+  modules[1].r = 255;
+  #ifdef DEBUG 
+  freeMem("After struct setup");
   #endif
   
   Ethernet.begin(mac);
@@ -67,29 +82,32 @@ void setup() {
     Serial.println("Sending data");
     #endif
     client.setDataArrivedDelegate(dataArrived);
+    
+    // set the connected light to be on.
+    digitalWrite(13, HIGH);
   } else {
     #ifdef DEBUG
     Serial.println("Not Connected - check connection and start again");
     #endif
     while (1) {
-      //digitalWrite(13, HIGH);
-      //delay(1000);
-      //digitalWrite(13, LOW);
-      //delay(1000);
+      //TODO Drop some debug code in here
     }
   }
-  
-  digitalWrite(13, HIGH);
 }
 
 void loop() {
   client.monitor();
   
+  // decay the values on the light strip.
   for (int i=0; i < STRIP_LENGTH; i++) {
-    if (pos == i) {
-      ind_colours[i] = get_colour(red, green, blue);
+    if (--modules[i].r < 0) modules[i].r = 0;
+    if (--modules[i].g < 0) modules[i].g = 0;
+    if (--modules[i].b < 0) modules[i].b = 0;
+    
+    if (modules[i].r == 0 && modules[i].b == 0 && modules[i].b == 0) {
+        ind_colours[i] = 0;
     } else {
-      ind_colours[i] = get_colour(0,0,0);
+        ind_colours[i] = get_colour(modules[i].r, modules[i].g, modules[i].b);
     }
   }
   
@@ -123,6 +141,13 @@ void dataArrived(WebSocketClient client, String data) {
     // iterate over the tokens of the message - assumed flat.
     char *p = buf;
     char *str;
+    
+    int red = 0;
+    int green = 0;
+    int blue = 0;
+    int pos = -1;
+    bool colour_change = false;
+    
     while ((str = strtok_r(p, ",", &p)) != NULL) { 
       #ifdef DEBUG
       Serial.println(str);
@@ -146,11 +171,14 @@ void dataArrived(WebSocketClient client, String data) {
       if (*key == 'g') green = atoi(val);
       if (*key == 'b') blue = atoi(val);
       if (*key == 'p') pos = atoi(val);
+      if (*key == 'a' && *val == 'c') colour_change = true;
       
     }
-    
+
     #ifdef DEBUG
-    Serial.print("RGB: (");
+    Serial.print("Change colour: ");
+    Serial.print(colour_change);
+    Serial.print(" RGB: (");
     Serial.print(red);
     Serial.print(",");
     Serial.print(green);
@@ -159,6 +187,27 @@ void dataArrived(WebSocketClient client, String data) {
     Serial.print(") P: ");
     Serial.println(pos);    
     #endif
+
+    // if it's a colour change then lets change the colour.
+    if (colour_change) {
+      // this code adds the new value on top of the existing one
+      // and then applies a cap if required
+      if ((modules[pos].r += red ) > 255) modules[pos].r = 255;
+      if ((modules[pos].g += green ) > 255) modules[pos].g = 255;
+      if ((modules[pos].b += blue ) > 255) modules[pos].b = 255;
+
+      #ifdef DEBUG
+      Serial.print(" RGB: (");
+      Serial.print(modules[pos].r);
+      Serial.print(",");
+      Serial.print(modules[pos].g);
+      Serial.print(",");
+      Serial.print(modules[pos].b);
+      Serial.print(") P: ");
+      Serial.println(pos);    
+      #endif
+
+    }
     
   } else {
     // check for heartbeat message
@@ -212,33 +261,6 @@ void write_to_module(long led_colour) {
 
       digitalWrite(CKI, HIGH); //Data is latched when clock goes high
     }
-}
-
-void post_frame (int colour_id) {
-  for(int LED_number = 0; LED_number < STRIP_LENGTH; LED_number++)
-  {
-    long this_led_color = strip_colors[LED_number]; //24 bits of color data
-    
-    for(byte color_bit = 23 ; color_bit != 255 ; color_bit--) {
-      //Feed color bit 23 first (red data MSB)
-
-      digitalWrite(CKI, LOW); //Only change data when clock is low
-
-      long mask = 1L << color_bit;
-      //The 1'L' forces the 1 to start as a 32 bit number, otherwise it defaults to 16-bit.
-
-      if(this_led_color & mask) 
-        digitalWrite(SDI, HIGH);
-      else
-        digitalWrite(SDI, LOW);
-
-      digitalWrite(CKI, HIGH); //Data is latched when clock goes high
-    }
-  }
-
-  //Pull clock low to put strip into reset/post mode
-  digitalWrite(CKI, LOW);
-  delayMicroseconds(500); //Wait for 500us to go into reset
 }
 
 
