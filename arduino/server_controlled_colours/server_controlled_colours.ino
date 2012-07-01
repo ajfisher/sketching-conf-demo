@@ -34,7 +34,7 @@ int red = 0;
 int blue = 0;
 int green = 0;
 
-//#define DEBUG
+#define DEBUG
 
 void setup() {
   // set up the devices
@@ -65,7 +65,12 @@ void setup() {
     #ifdef DEBUG
     Serial.println("Not Connected - check connection and start again");
     #endif
-    while (1) {}
+    while (1) {
+      //digitalWrite(13, HIGH);
+      //delay(1000);
+      //digitalWrite(13, LOW);
+      //delay(1000);
+    }
   }
   
   digitalWrite(13, HIGH);
