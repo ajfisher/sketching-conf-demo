@@ -21,13 +21,13 @@
             socket.on('message', function(data) {
                 //console.log(data);
                 switch (data.a) {
-                    case "clr":
-                        console.log("Colour set: RGB(" + data.r + "," + data.g + "," + data.b + ") P: " + data.pos);
+                    case "c":
+                        console.log("Colour set: RGB(" + data.r + "," + data.g + "," + data.b + ") P: " + data.p);
                         
                         $("#rval").text(data.r);
                         $("#gval").text(data.g);
                         $("#bval").text(data.b);
-                        $("#posval").text(data.pos);
+                        $("#posval").text(data.p);
                         
                         var rgb = "rgb(" + data.r + ", " + data.g + ", " + data.b + ")";
         	            $("#swatch").css("background-color", rgb);
@@ -56,7 +56,6 @@
         <p>Item touched: <span id="posval"></span></p>
     </div>
     <div id="swatch"></div>
-    <div class="clearfix"></div>
 {% endblock %}
 
 

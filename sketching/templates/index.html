@@ -4,7 +4,7 @@
 {% block extra_js %}
     {% load socketio_tags %}
     {% socketio %}
-
+    <script src="{{STATIC_URL}}js/touchyfeely.js"></script>
 
     <script type="text/javascript">
         var room = "{{room}}";
@@ -28,34 +28,13 @@
                         break;
                 }
             });
-	        
-/**	        socket.on('message', function(data) {
-	            console.log(data.a);
-	            switch (data.a) {
-	                case "joined":
-	                    if (data.username == username) {
-	                        $("#signin").hide();
-	                        $("#phonedata").show();
-	                        $("#pname").html(data.username);
-	                        $("#pid").html(data.id);
-	                        pid = data.id; // store this for later.
-                            window.addEventListener("devicemotion", update_accel, false);
-                        }
-	                    break;
-                    case "join_failed":
-                        alert("joined failed " + data.message);
-                        break;
-	            }
-	        });**/
-	        
+	               
 	        // set up the sliders
 	        var change_callback = (function(event, ui) {
 	            red = $( "#redslider" ).slider("value");
 	            green = $( "#greenslider" ).slider("value");
 	            blue = $( "#blueslider" ).slider("value");
-	            //console.log(r, g, b);
 	            var rgb = "rgb(" + red + ", " + green + ", " + blue + ")";
-	            //console.log(rgb);
 	            // write out the vals to the screen.
 	            $("#rval").text(red);
 	            $("#gval").text(green);
@@ -74,10 +53,33 @@
 	            
 	        
 	        // set up the ping handlers.
-	        $(".ping").click(function(evt) {
+	        var ping_handler = (function(evt) {
 	            msg = {a:"clr", r: red, b: blue, g: green, p: $(this).data("pos") }
 	            socket.send(msg);
 	        });
+
+            var toggle_open = (function() {
+	            // fire off the toggle event
+	            $("#colourpanel").show("slide");
+	        });
+	        
+	        var toggle_close = (function() {
+	            // fire off the toggle event
+	            $("#colourpanel").hide("slide");
+	        });
+
+	        // determine if we're a touch device or not.
+	        if (touchyfeely.touch) {
+    	        $("#toggleopen a").bind("touchstart", toggle_open);
+                $("#toggleclose a").bind("touchstart", toggle_close);
+    	        $(".ping").bind("touchstart", ping_handler);
+            } else {
+	            $("#toggleopen a").click(toggle_open);
+                $("#toggleclose a").click(toggle_close);
+    	        $(".ping").mouseover(ping_handler);
+            }
+
+	        
         });
 
     </script>
@@ -86,22 +88,38 @@
 {% block extra_css %}
 <style>
     .ping {width: 100px; height: 100px; border: 1px solid black; float: left; margin-left: 20px;}
+    #colourpanel {
+        position: absolute; 
+        width: 300px; 
+        border: 1px solid red; 
+        background: white; 
+        padding: 20px;
+        display: none;
+    }
+    #slidercontainer {background: #ff}
+    #slidercontainer p.val {float: right; width: 50px; clear: right; margin-top: -20px; text-align: right;}
+    #toggleclose {margin-top: 0px;}
 </style>
 
 {% endblock %}
 
 {% block main %}
     <div><h1>Sketching test</h1></div>
-    <div id="slidercontainer">
-        <div id="redslider"></div>
-        <p>Red: <span id="rval"></span></p>
-        <div id="greenslider"></div>
-        <p>Green: <span id="gval"></span></p>
-        <div id="blueslider"></div>
-        <p>Blue: <span id="bval"></span></p>
+    <div id="colourpanel">
+        <p id="toggleclose"><a href="javascript:void(0)">Close</a></p>
+        <div id="slidercontainer">
+            <div id="redslider"></div>
+            <p class="val" id="rval"></p>
+            <p></p>
+            <div id="greenslider"></div>
+            <p  class="val" id="gval"></p>
+            <p></p>
+            <div id="blueslider"></div>
+            <p  class="val" id="bval"></p>
+        </div>
+        <div id="swatch"></div>
     </div>
-    <div id="swatch"></div>
-    <div class="clearfix"></div>
+    <div id="toggleopen"><a href="javascript:void(0)">Change Colour</a></div>
     <div id="pings">
         <div id="ping1" class="ping" data-pos="0">0</div>
         <div id="ping2" class="ping" data-pos="1">1</div>
