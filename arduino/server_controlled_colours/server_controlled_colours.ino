@@ -25,7 +25,7 @@ int SDI = 3;
 int colour_id = 0;
 
 #define STRIP_LENGTH 3 // Number of RGBLED modules connected
-long strip_colors[STRIP_LENGTH];
+//long strip_colors[STRIP_LENGTH];
 
 long ind_colours[STRIP_LENGTH]; // actual individual modules.
 
@@ -207,34 +207,6 @@ void write_to_module(long led_colour) {
       digitalWrite(CKI, HIGH); //Data is latched when clock goes high
     }
 }
-
-void post_frame (int colour_id) {
-  for(int LED_number = 0; LED_number < STRIP_LENGTH; LED_number++)
-  {
-    long this_led_color = strip_colors[LED_number]; //24 bits of color data
-    
-    for(byte color_bit = 23 ; color_bit != 255 ; color_bit--) {
-      //Feed color bit 23 first (red data MSB)
-
-      digitalWrite(CKI, LOW); //Only change data when clock is low
-
-      long mask = 1L << color_bit;
-      //The 1'L' forces the 1 to start as a 32 bit number, otherwise it defaults to 16-bit.
-
-      if(this_led_color & mask) 
-        digitalWrite(SDI, HIGH);
-      else
-        digitalWrite(SDI, LOW);
-
-      digitalWrite(CKI, HIGH); //Data is latched when clock goes high
-    }
-  }
-
-  //Pull clock low to put strip into reset/post mode
-  digitalWrite(CKI, LOW);
-  delayMicroseconds(500); //Wait for 500us to go into reset
-}
-
 
 #ifdef DEBUG
 //Code to print out the free memory
