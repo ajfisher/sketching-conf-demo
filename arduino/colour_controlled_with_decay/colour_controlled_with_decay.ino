@@ -18,7 +18,7 @@ char buf[BUFLENGTH]; // character buffer for json processing
 int CKI = 2;
 int SDI = 3;
 
-#define STRIP_LENGTH 3 // Number of RGBLED modules connected
+#define STRIP_LENGTH 7 // Number of RGBLED modules connected
 
 long ind_colours[STRIP_LENGTH]; // actual individual modules.
 
@@ -31,10 +31,11 @@ struct colour_module {
 
 struct colour_module modules[STRIP_LENGTH];
 
-#define DECAY_TIME 4 // number of cycles to run before decaying the data.
+#define DECAY_TIME 8 // number of cycles to run before decaying the data.
+
 int decay_counter = 0; // use to keep track of cycles before doing a decay loop.
 
-#define DEBUG
+//#define DEBUG
 
 void setup() {
   // set up the devices
@@ -172,7 +173,8 @@ void dataArrived(WebSocketClient client, String data) {
     }
 
     // if it's a colour change then lets change the colour.
-    if (colour_change) {
+    // also just check for the position too.
+    if (colour_change && pos < STRIP_LENGTH) {
       
       #ifdef DEBUG
       Serial.print("Change colour: ");

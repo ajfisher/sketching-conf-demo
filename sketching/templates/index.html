@@ -10,6 +10,7 @@
         var room = "{{room}}";
         
         var red = 200, green = 100, blue = 50;
+        var ping_limit = 7;
 
 	    $(function() {
 	        socket = new io.Socket();
@@ -67,6 +68,12 @@
 	            // fire off the toggle event
 	            $("#colourpanel").hide("slide");
 	        });
+	        
+	        // write the divs into the page for the ping items
+	        for (var i=0; i< ping_limit; i++) {
+	            $("#pings").append("<div class=\"ping\" data-pos=\"" + i + "\">" + i + "</div>");
+	        }
+	        
 
 	        // determine if we're a touch device or not.
 	        if (touchyfeely.touch) {
@@ -110,9 +117,9 @@
     </div>
     <div id="toggleopen"><a href="javascript:void(0)">Change Colour</a></div>
     <div id="pings">
-        <div id="ping1" class="ping" data-pos="0">0</div>
+        <!--<div id="ping1" class="ping" data-pos="0">0</div>
         <div id="ping2" class="ping" data-pos="1">1</div>
-        <div id="ping3" class="ping" data-pos="2">2</div>
+        <div id="ping3" class="ping" data-pos="2">2</div>-->
     </div>
 {% endblock %}
 
