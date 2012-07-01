@@ -15,14 +15,8 @@ WebSocketClient client;
 #define BUFLENGTH 32
 char buf[BUFLENGTH]; // character buffer for json processing
 
-#define STATE_NONE 0
-#define STATE_START 1
-#define START_COLOURCHANGE 2
-int state = STATE_NONE;
-
 int CKI = 2;
 int SDI = 3;
-int colour_id = 0;
 
 #define STRIP_LENGTH 3 // Number of RGBLED modules connected
 
@@ -30,17 +24,15 @@ long ind_colours[STRIP_LENGTH]; // actual individual modules.
 
 struct colour_module {
   int r;
-  int b;
   int g;
-  long rgb;
+  int b;
+  //long rgb;
 };
 
 struct colour_module modules[STRIP_LENGTH];
 
-//int pos = -1;
-//int red = 0;
-//int blue = 0;
-//int green = 0;
+#define DECAY_TIME 4 // number of cycles to run before decaying the data.
+int decay_counter = 0; // use to keep track of cycles before doing a decay loop.
 
 #define DEBUG
 
@@ -60,10 +52,10 @@ void setup() {
     modules[i].r = 0;
     modules[i].g = 0;
     modules[i].b = 0;
-    modules[i].rgb = 0;
+    //modules[i].rgb = 0;
   }
   
-  modules[1].r = 255;
+  modules[1].g = 63;
   #ifdef DEBUG 
   freeMem("After struct setup");
   #endif
@@ -98,20 +90,24 @@ void setup() {
 void loop() {
   client.monitor();
   
-  // decay the values on the light strip.
-  for (int i=0; i < STRIP_LENGTH; i++) {
-    if (--modules[i].r < 0) modules[i].r = 0;
-    if (--modules[i].g < 0) modules[i].g = 0;
-    if (--modules[i].b < 0) modules[i].b = 0;
-    
-    if (modules[i].r == 0 && modules[i].b == 0 && modules[i].b == 0) {
-        ind_colours[i] = 0;
-    } else {
-        ind_colours[i] = get_colour(modules[i].r, modules[i].g, modules[i].b);
+  // we check here if it's time to run a decay loop or not.
+  if (decay_counter-- <= 0) {
+    decay_counter = DECAY_TIME;
+    // decay the values on the light strip.
+    for (int i=0; i < STRIP_LENGTH; i++) {
+      if (--modules[i].r < 0) modules[i].r = 0;
+      if (--modules[i].g < 0) modules[i].g = 0;
+      if (--modules[i].b < 0) modules[i].b = 0;
+      
+      if (modules[i].r == 0 && modules[i].g == 0 && modules[i].b == 0) {
+          ind_colours[i] = 0;
+      } else {
+          ind_colours[i] = get_colour(modules[i].r, modules[i].g, modules[i].b);
+      }
     }
+    
+    post_set(ind_colours);
   }
-  
-  post_set(ind_colours);
   delay(1);
 }
 
@@ -175,21 +171,22 @@ void dataArrived(WebSocketClient client, String data) {
       
     }
 
-    #ifdef DEBUG
-    Serial.print("Change colour: ");
-    Serial.print(colour_change);
-    Serial.print(" RGB: (");
-    Serial.print(red);
-    Serial.print(",");
-    Serial.print(green);
-    Serial.print(",");
-    Serial.print(blue);
-    Serial.print(") P: ");
-    Serial.println(pos);    
-    #endif
-
     // if it's a colour change then lets change the colour.
     if (colour_change) {
+      
+      #ifdef DEBUG
+      Serial.print("Change colour: ");
+      Serial.print(colour_change);
+      Serial.print(" RGB: (");
+      Serial.print(red);
+      Serial.print(",");
+      Serial.print(green);
+      Serial.print(",");
+      Serial.print(blue);
+      Serial.print(") P: ");
+      Serial.println(pos);    
+      #endif
+      
       // this code adds the new value on top of the existing one
       // and then applies a cap if required
       if ((modules[pos].r += red ) > 255) modules[pos].r = 255;
@@ -206,7 +203,6 @@ void dataArrived(WebSocketClient client, String data) {
       Serial.print(") P: ");
       Serial.println(pos);    
       #endif
-
     }
     
   } else {
