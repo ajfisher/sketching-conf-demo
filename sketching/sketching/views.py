@@ -28,11 +28,11 @@ def message(request, socket, context, message):
     
         print message
         msg = {
-            "pos": pos,
+            "p": pos,
             "r": red,
             "g": green,
             "b": blue,
-            "a": "clr",
+            "a": "c",
         }
         data = {"pid": socket.session.session_id, 'a': 'ack'}
         socket.send(data)
