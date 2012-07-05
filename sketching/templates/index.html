@@ -9,7 +9,7 @@
     <script type="text/javascript">
         var room = "{{room}}";
         
-        var red = 200, green = 100, blue = 50;
+        var red = Math.floor(Math.random()*256), green = Math.floor(Math.random()*256), blue = Math.floor(Math.random()*256);
         var ping_limit = 20;
         var row_breaks = [9]; // where to break the rows
 
@@ -45,8 +45,11 @@
 	        });
 	        
 	        var slider_opts = {range: "min", min: 0, max:255, value: 0, change: change_callback};
+	        slider_opts.value = red;
 	        $( "#redslider" ).slider(slider_opts);
+	        slider_opts.value = green;
 	        $( "#greenslider" ).slider(slider_opts);
+	        slider_opts.value = blue;
 	        $( "#blueslider" ).slider(slider_opts);
             // set the sliders
 	        $( "#redslider" ).slider("value", red);
@@ -87,11 +90,13 @@
 
 	        // determine if we're a touch device or not.
 	        if (touchyfeely.touch) {
+    	        $("#tapclick").text("touch");
     	        $("#toggleopen a").bind("touchstart", toggle_open);
                 $("#toggleclose a").bind("touchstart", toggle_close);
     	        $(".ping").bind("touchstart", ping_handler);
     	        $(".ping").bind("touchend", ping_release);
             } else {
+    	        $("#tapclick").text("click");
 	            $("#toggleopen a").click(toggle_open);
                 $("#toggleclose a").click(toggle_close);
     	        $(".ping").mousedown(ping_handler);
@@ -112,7 +117,10 @@
 {% endblock %}
 
 {% block main %}
-    <div><h1>Sketching test</h1></div>
+    <h1>Just <span id="tapclick"></span> the boxes below</h1>
+    <p class="orientation">
+        Flip your device to landscape mode to have a better view of what's going on.
+    </p>
     <div id="colourpanel">
         <p id="toggleclose"><a href="javascript:void(0)">Close</a></p>
         <div id="slidercontainer">
@@ -133,6 +141,9 @@
         <div id="ping2" class="ping" data-pos="1">1</div>
         <div id="ping3" class="ping" data-pos="2">2</div>-->
     </div>
+    <div class="clearfix"></div>
+    <h2>What is this?</h2>
+    <p>It's an experiment. Every time you hit a square, a light appears in my house</p>
 {% endblock %}
 
 
