@@ -4,3 +4,5 @@
 local_settings.py
 *.*~
 /sketching/LICENCE~
+/sketching/sketching.db
+/LICENCE~
