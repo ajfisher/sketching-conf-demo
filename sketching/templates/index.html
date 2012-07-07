@@ -77,7 +77,7 @@
 	        
 	        var ping_release = (function(evt) {
                 $(this).addClass("fade");
-                $(this).css("background-color", "#FFF");
+                $(this).css("background-color", "#000");
             });
             
             var toggle_open = (function() {
@@ -99,13 +99,13 @@
 
 	        // determine if we're a touch device or not.
 	        if (touchyfeely.touch) {
-    	        $("#tapclick").text("touch");
+    	        $("#tapclick").text("Touch");
     	        $("#toggleopen a").bind("touchstart", toggle_open);
                 $("#toggleclose a").bind("touchstart", toggle_close);
     	        $(".ping").bind("touchstart", ping_handler);
     	        $(".ping").bind("touchend", ping_release);
             } else {
-    	        $("#tapclick").text("click");
+    	        $("#tapclick").text("Click");
 	            $("#toggleopen a").click(toggle_open);
                 $("#toggleclose a").click(toggle_close);
     	        $(".ping").mousedown(ping_handler);
@@ -126,7 +126,7 @@
 {% endblock %}
 
 {% block main %}
-    <h1>Just <span id="tapclick"></span> the boxes below</h1>
+    <h1><span id="tapclick"></span> the circles</h1>
     <p class="orientation">
         Flip your device to landscape mode to have a better view of what's going on.
     </p>
@@ -152,6 +152,7 @@
     <div id="toggleopen"><a href="javascript:void(0)">Change Colour</a></div>
     <h2>What is this?</h2>
     <p>It's an experiment. Every time you hit a square, a light appears in my house</p>
+
 {% endblock %}
 
 
