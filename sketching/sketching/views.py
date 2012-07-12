@@ -17,8 +17,6 @@ def msg_test(request, template='msg_test.html'):
     
 @events.on_message(channel="ping")
 def message(request, socket, context, message):
-    #socket.channels = ["ping"]
-    #message = message[0]
     if message["a"] == "clr":
         
         pos = message["p"]
@@ -26,7 +24,6 @@ def message(request, socket, context, message):
         green = message["g"]
         blue = message["b"]
     
-        print message
         msg = {
             "p": pos,
             "r": red,
