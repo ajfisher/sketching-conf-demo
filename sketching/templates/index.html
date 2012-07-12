@@ -145,9 +145,7 @@
                 $("#toggleclose a").click(toggle_close);
     	        $(".ping").mousedown(ping_handler);
     	        $(".ping").mouseup(ping_release);
-            }
-
-	        
+            }	        
         });
 
     </script>
@@ -162,11 +160,8 @@
 
 {% block main %}
     <h1><span id="tapclick"></span> the circles</h1>
-    <p class="orientation">
-        Flip your device to landscape mode to have a better view of what's going on.
-    </p>
     <div id="colourpanel">
-        <p id="toggleclose"><a href="javascript:void(0)">Close</a></p>
+        <p id="toggleclose"><a href="javascript:void(0)">X</a></p>
         <div id="slidercontainer">
             <div id="redslider"></div>
             <p class="val" id="rval"></p>
@@ -184,6 +179,9 @@
         </p>
     </div>
     <div class="clearfix"></div>
+    <p class="orientation">
+        Flip your device to landscape mode to have a better view of what's going on.
+    </p>
     <!--<h2>What is this?</h2>
     <p>It's an experiment. Every time you hit a square, a light appears in my house</p>
     <script>
@@ -194,10 +192,10 @@
     </script>-->
 {% endblock %}
 {% block footer %}
-    <div>
+    <p>
         <a id="toggleopen" href="javascript:void(0)">Change Colour</a>
-        <a id="chooserandom" href="javascript:void(0)">Choose random colour</a>
+        <a id="chooserandom" href="javascript:void(0)">Random colour</a>
         <a id="discotoggle" href="javascript:void(0)">Disco Mode Off</a>
-    </div>
+    </p>
 {% endblock %}
 

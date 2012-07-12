@@ -13,6 +13,9 @@ footer {
     text-align: center;
     padding-bottom: 15px;
 }
+footer p {
+    margin: 0;
+}
 
 footer a {
     color: #fff; 
@@ -32,6 +35,8 @@ footer a:hover, footer a.hover {
 
 
 #slidercontainer { width: 300px; color: #000;}
+#slidercontainer p.val {float: right; width: 50px; clear: right; margin-top: -20px; text-align: right;}
+
 #redslider, #greenslider, #blueslider { width: 250px;}
 
 #redslider .ui-slider-range { background: #ef2929; }
@@ -54,6 +59,50 @@ footer a:hover, footer a.hover {
     height: 50px;
     margin-left: 5px;
     margin-top: 5px;**/
+}
+
+.fade {
+    background-color: #000;
+    -webkit-transition: background-color 6s;
+    -moz-transition: background-color 6s;
+    -o-transition: background-color 6s;
+    -ms-transition: background-color 6s;
+    transition: background-color 6s;
+}
+
+#colourpanel {
+    position: fixed; 
+    width: 300px; 
+    background: rgb(255,255,255); 
+    padding: 20px;
+    display: none;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -o-border-radius: 10px;
+    -webkit-border-radius: 10px; 
+}
+
+#pings {
+    margin: auto;
+}
+
+#pings p { text-align: center; margin: 0; }
+#pings br { clear: left }
+
+
+#toggleclose {margin-top: 0px;}
+
+p.orientation { display: none;}
+
+p#toggleclose a {
+    text-decoration: none;
+    color: #000;
+    background: rgba(0,0,0,0.2);
+    padding: 6px 8px;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -o-border-radius: 3px;
+    -webkit-border-radius: 3px; 
 }
 
 @media all and (min-height: 600px) and (orientation: landscape){
@@ -108,6 +157,12 @@ footer a:hover, footer a.hover {
     }
     
     h1 {font-size: 10pt; }
+
+    footer p {font-size: 7pt; padding: 0;}
+    footer { text-align: left;}
+    footer p a {
+        padding: 2px;
+    }
 }
 
 @media all and (min-width: 600px) and (orientation: portrait){
@@ -147,63 +202,22 @@ footer a:hover, footer a.hover {
     }
     
     h1 { font-size: 10pt; }
+
+    footer p {font-size: 7pt;}
+
+    #colourpanel {width: 200px;}
+    #slidercontainer { width: 200px;}
+    #swatch {width: 200px;}
+    #redslider, #greenslider, #blueslider { width: 150px;}
 }
-
-
-.fade {
-    background-color: #000;
-	-webkit-transition: background-color 6s;
-	-moz-transition: background-color 6s;
-	-o-transition: background-color 6s;
-	-ms-transition: background-color 6s;
-	transition: background-color 6s;
-}
-
-#colourpanel {
-    position: fixed; 
-    width: 300px; 
-    background: rgb(255,255,255); 
-    padding: 20px;
-    display: none;
-    border-radius: 10px;
-    -moz-border-radius: 10px;
-    -o-border-radius: 10px;
-    -webkit-border-radius: 10px; 
-}
-
-#pings {
-    margin: auto;
-}
-
-#pings p { text-align: center; margin: 0; }
-
-
-#pings br { clear: left }
-
-#slidercontainer {background: #ff}
-#slidercontainer p.val {float: right; width: 50px; clear: right; margin-top: -20px; text-align: right;}
-#toggleclose {margin-top: 0px;}
-
-
-p.orientation { display: none; }
-
 
 @media all and (orientation: portrait) {
 
     h1 { position: relative; }
 
-/**    p.orientation {
+    p.orientation {
         display: block;
     }
-    
-    #pings {
-        display: none;
-    }
-    
-    #toggleopen {
-        display: none;
-    }
-    **/
 }
 
 .clearfix {clear: both;}
