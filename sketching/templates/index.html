@@ -21,6 +21,8 @@
         ];
         var row_breaks = [2,6,11,15]; // where to break the rows
 
+        var discomode = false;
+
 	    $(function() {
 	        socket = new io.Socket();
 	        socket.connect();
@@ -67,27 +69,57 @@
 	        
 	        // set up the ping handlers.
 	        var ping_handler = (function(evt) {
+                // sets the colour.
 	            evt.preventDefault();
 	            $(this).removeClass("fade");
 	            $(this).css("background-color", "rgb(" + red + "," + green + "," + blue + ")");
 	            msg = {a:"clr", r: red, b: blue, g: green, p: $(this).data("pos") }
 	            socket.send(msg);
+
+                // now check for disco mode
+                if (discomode) choose_random();
 	        });
 	        
 	        var ping_release = (function(evt) {
+                // set in order to put the fade back onto the ball
                 $(this).addClass("fade");
                 $(this).css("background-color", "#000");
             });
             
             var toggle_open = (function() {
 	            // fire off the toggle event
-	            $("#colourpanel").show("slide");
+	            $("#colourpanel").show("fade");
+                $("#toggleopen").addClass("hover");
 	        });
 	        
 	        var toggle_close = (function() {
 	            // fire off the toggle event
-	            $("#colourpanel").hide("slide");
+	            $("#colourpanel").hide("fade");
+                $("#toggleopen").removeClass("hover");
 	        });
+
+            var choose_random = (function() {
+                // choose a random colour and set it on the sliders
+                red = Math.floor(Math.random()*256);
+                $( "#redslider" ).slider("value", red);
+                green = Math.floor(Math.random()*256);
+                $( "#greenslider" ).slider("value", green);
+                blue = Math.floor(Math.random()*256);
+                $( "#blueslider" ).slider("value", blue);
+
+            });
+
+            var disco_toggle = (function() {
+                // just toggle the status.
+                discomode = !discomode;
+                if (discomode) {
+                    $("#discotoggle").addClass("hover");
+                    $("#discotoggle").text("Disco Mode On");
+                } else {
+                    $("#discotoggle").removeClass("hover");
+                    $("#discotoggle").text("Disco Mode Off");
+                }
+            });
 	        
 	        // write the divs into the page for the ping items
 	        for (var i=0; i< ping_limit; i++) {
@@ -99,13 +131,17 @@
 	        // determine if we're a touch device or not.
 	        if (touchyfeely.touch) {
     	        $("#tapclick").text("Touch");
-    	        $("#toggleopen a").bind("touchstart", toggle_open);
+                $("#chooserandom").bind("touchstart", choose_random);
+                $("#discotoggle").bind("touchstart", disco_toggle);
+    	        $("#toggleopen").bind("touchstart", toggle_open);
                 $("#toggleclose a").bind("touchstart", toggle_close);
     	        $(".ping").bind("touchstart", ping_handler);
     	        $(".ping").bind("touchend", ping_release);
             } else {
     	        $("#tapclick").text("Click");
-	            $("#toggleopen a").click(toggle_open);
+                $("#chooserandom").bind("click", choose_random);
+                $("#discotoggle").bind("click", disco_toggle);
+	            $("#toggleopen").click(toggle_open);
                 $("#toggleclose a").click(toggle_close);
     	        $(".ping").mousedown(ping_handler);
     	        $(".ping").mouseup(ping_release);
@@ -148,15 +184,20 @@
         </p>
     </div>
     <div class="clearfix"></div>
-    <div id="toggleopen"><a href="javascript:void(0)">Change Colour</a></div>
-    <h2>What is this?</h2>
+    <!--<h2>What is this?</h2>
     <p>It's an experiment. Every time you hit a square, a light appears in my house</p>
     <script>
         document.write("Height: " + window.screen.availHeight);
         document.write("<br/>");
         document.write("Width: " + window.screen.width);
         
-    </script>
+    </script>-->
 {% endblock %}
-
+{% block footer %}
+    <div>
+        <a id="toggleopen" href="javascript:void(0)">Change Colour</a>
+        <a id="chooserandom" href="javascript:void(0)">Choose random colour</a>
+        <a id="discotoggle" href="javascript:void(0)">Disco Mode Off</a>
+    </div>
+{% endblock %}
 

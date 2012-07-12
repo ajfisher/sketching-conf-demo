@@ -1,7 +1,37 @@
-body {background-color: #000; color: #fff;}
-h1 { margin: 0; padding: 0; position: absolute; font-family: helvetica, serif;}
+body {background-color: #000; color: #fff; font-family: helvetica, serif;}
+h1 { 
+    margin: 0; 
+    padding: 0; 
+    position: absolute; 
+    color: rgb(254,188,111)
+}
 
-#slidercontainer { width: 300px; }
+footer {
+    position: fixed; 
+    width: 100%;
+    bottom: 0px;
+    text-align: center;
+    padding-bottom: 15px;
+}
+
+footer a {
+    color: #fff; 
+    text-decoration: none; 
+    background: #456; 
+    padding: 15px;
+    -webkit-transition: background-color 1s;
+    -moz-transition: background-color 1s;
+    -o-transition: background-color 1s;
+    -ms-transition: background-color 1s;
+    transition: background-color 1s;
+}
+
+footer a:hover, footer a.hover {
+    background: rgb(254,188,111);
+}
+
+
+#slidercontainer { width: 300px; color: #000;}
 #redslider, #greenslider, #blueslider { width: 250px;}
 
 #redslider .ui-slider-range { background: #ef2929; }
@@ -130,12 +160,15 @@ h1 { margin: 0; padding: 0; position: absolute; font-family: helvetica, serif;}
 }
 
 #colourpanel {
-    position: absolute; 
+    position: fixed; 
     width: 300px; 
-    border: 1px solid black; 
-    background: white; 
+    background: rgb(255,255,255); 
     padding: 20px;
     display: none;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -o-border-radius: 10px;
+    -webkit-border-radius: 10px; 
 }
 
 #pings {
