@@ -18,7 +18,7 @@ char buf[BUFLENGTH]; // character buffer for json processing
 int CKI = 2;
 int SDI = 3;
 
-#define STRIP_LENGTH 20 // Number of RGBLED modules connected
+#define STRIP_LENGTH 19 // Number of RGBLED modules connected
 
 long ind_colours[STRIP_LENGTH]; // actual individual modules.
 
