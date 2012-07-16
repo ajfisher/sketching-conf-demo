@@ -4,14 +4,14 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <WebSocketClient.h>
+#include <WebSocketIOClient.h>
 
 
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 char server[] = "10.0.1.15";
 char path[] = "/socket.io/websocket/";
 int port = 8000;
-WebSocketClient client;
+WebSocketIOClient client;
 
 #define BUFLENGTH 64
 char buf[BUFLENGTH]; // character buffer for json processing
@@ -48,7 +48,7 @@ void loop() {
   client.monitor();
 }
 
-void dataArrived(WebSocketClient client, String data) {
+void dataArrived(WebSocketIOClient client, String data) {
   //Serial.println("Data Arrived: " + data);
   //first thing, lets pull out the length of the data packet.
   //Serial.print("Position of next ~: ");

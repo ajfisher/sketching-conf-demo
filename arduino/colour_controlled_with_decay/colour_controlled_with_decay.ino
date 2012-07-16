@@ -4,13 +4,13 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <WebSocketClient.h>
+#include <WebSocketIOClient.h>
 
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 char server[] = "10.0.1.15";
 char path[] = "/socket.io/websocket/";
 int port = 8000;
-WebSocketClient client;
+WebSocketIOClient client;
 
 #define BUFLENGTH 32
 char buf[BUFLENGTH]; // character buffer for json processing
@@ -112,7 +112,7 @@ void loop() {
   delay(1);
 }
 
-void dataArrived(WebSocketClient client, String data) {
+void dataArrived(WebSocketIOClient client, String data) {
 
   // check here for a json message as it's most timely and also most frequent
   int jsonindex = data.lastIndexOf("~j~");
