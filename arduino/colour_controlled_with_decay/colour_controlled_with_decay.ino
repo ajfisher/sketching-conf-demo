@@ -1,3 +1,4 @@
+//#define DEBUG
 #include "Arduino.h"
 #include <Ethernet.h>
 #include <SPI.h>
@@ -7,9 +8,9 @@
 #include <WebSocketIOClient.h>
 
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
-char server[] = "10.0.1.15";
+char server[] = "128.223.68.180";
 char path[] = "/socket.io/websocket/";
-int port = 8000;
+int port = 80;
 WebSocketIOClient client;
 
 #define BUFLENGTH 32
@@ -34,8 +35,6 @@ struct colour_module modules[STRIP_LENGTH];
 #define DECAY_TIME 8 // number of cycles to run before decaying the data.
 
 int decay_counter = 0; // use to keep track of cycles before doing a decay loop.
-
-//#define DEBUG
 
 void setup() {
   // set up the devices
