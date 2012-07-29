@@ -49,23 +49,10 @@ void loop() {
 }
 
 void dataArrived(WebSocketIOClient client, String data) {
-  //Serial.println("Data Arrived: " + data);
-  //first thing, lets pull out the length of the data packet.
-  //Serial.print("Position of next ~: ");
-  //Serial.println(data.indexOf("~", 3));
-  //String datalength = data.substring(3, data.indexOf("~", 3));
-  //char d[5];
-  //datalength.toCharArray(d, 5);
-  //int dl = atoi(d);
-  //Serial.print("Data length: ");
-  //Serial.println(datalength);
-  //Serial.println(dl);
 
   // check here for a json message as it's most timely and also most frequent
   int jsonindex = data.lastIndexOf("~j~");
   if (jsonindex > 0) {
-    //Serial.print("JSON index: ");
-    //Serial.println(jsonindex+3);
     //now get the json message
     String msg_string = data.substring(jsonindex+3);
     msg_string = msg_string.substring(1, msg_string.lastIndexOf("}"));
