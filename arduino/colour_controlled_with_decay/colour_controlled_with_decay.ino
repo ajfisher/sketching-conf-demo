@@ -8,7 +8,7 @@
 #include <WebSocketIOClient.h>
 
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
-char server[] = "128.223.68.180";
+char server[] = "10.0.43.13";
 char path[] = "/socket.io/websocket/";
 int port = 80;
 WebSocketIOClient client;
