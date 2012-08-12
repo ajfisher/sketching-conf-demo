@@ -7,13 +7,16 @@ from django_socketio import events
 
 
 def home(request, template='index.html'):
-    context = {"room" : "ping"}
+    context = {"room": "ping",}
     return render_to_response(template, context, RequestContext(request))
     
 def msg_test(request, template='msg_test.html'):
-    context = {"room" : "pong"}
+    context = {"room": "pong",}
     return render_to_response(template, context, RequestContext(request))
     
+def review(request, template='review.html'):
+    context = {"room": "pong",}
+    return render_to_response(template, context, RequestContext(request))
     
 @events.on_message(channel="ping")
 def message(request, socket, context, message):

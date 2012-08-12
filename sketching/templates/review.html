@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Sketching with Hardware Conference{% endblock %}
+{% block extra_js %}
+    {% load socketio_tags %}
+    {% socketio %}
+    <script type="text/javascript">
+        var room = "{{room}}";
+        
+        var red = Math.floor(Math.random()*256), green = Math.floor(Math.random()*256), blue = Math.floor(Math.random()*256);
+        var ping_limit = 19;
+        // used to map the pings to the wiring positions.
+        var ping_ids = [
+            18,17,16,
+            12,13,14,15,
+            11,10,9,8,7,
+            3,4,5,6,
+            2,1,0
+        ];
+        var row_breaks = [2,6,11,15]; // where to break the rows
+
+	    $(function() {
+	        socket = new io.Socket();
+	        socket.connect();
+	        socket.on('connect', function() {
+		        socket.subscribe(room);
+	        });
+
+            socket.on('message', function(data) {
+                switch (data.a) {
+                    case "c":
+                        // get the position colour 
+                        var item = ".ping[data-pos='" + data.p + "']"
+        	            $(item).removeClass("fade");
+                        $(item).css("background-color", "rgb(" + data.r + "," + data.g + "," + data.b + ")");
+                        window.setInterval((function(){
+                            $(".ping").addClass("fade");
+                            $(".ping").css("background-color", "#000");
+                        }), 30);
+                        break;
+                }
+            });
+	        
+	        // write the divs into the page for the ping items
+	        for (var i=0; i< ping_limit; i++) {
+	            $("#pings p").append("<div class=\"ping fade\" data-pos=\"" + ping_ids[i] + "\"> </div>");
+	            if (row_breaks.indexOf(i) >= 0) $("#pings p").append("<br/>");
+	        }
+	                
+        });
+
+    </script>
+{% endblock %}
+
+{% block main %}
+    <h1>Here's what is happening</h1>
+    <div id="pings">
+        <p style="text-align: center">
+        </p>
+    </div>
+    <div class="clearfix"></div>
+{% endblock %}
+
+

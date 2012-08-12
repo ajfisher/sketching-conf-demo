@@ -17,5 +17,6 @@ urlpatterns = patterns('',
     url("", include('django_socketio.urls')),
     url(r'^$', 'sketching.views.home', name='home'),
     url(r'^test', 'sketching.views.msg_test', name='msg_test'),
+    url(r'^review', 'sketching.views.review', name='review'),
     url(r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': '/static/favicon.ico'}),
 )
